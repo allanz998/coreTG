@@ -14,9 +14,9 @@ sudo systemctl disable chanobot
 
 mkdir -p /opt/telegram
 cd /opt/telegram
-git clone "https://github.com/allanz998/dekrinsmtp.git"
-mv dekrinsmtp/* .
-cd TempmailBot 
+git clone "https://github.com/allanz998/coreTG.git"
+mv coreTG/* .
+ 
 
 
 #now the rest is about launching the stuff
