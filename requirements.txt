@@ -1,0 +1,7 @@
+django 
+aiogram
+pillow
+pyTelegramBotAPI 
+celery
+django-unfold
+telepot
