@@ -14,12 +14,9 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton
-
 ) 
-from aiohttp import web 
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode 
-from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 import logging
 from core.tasks import send_file
 
@@ -28,23 +25,13 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-
-# Webserver settings
-# bind localhost only to prevent any external access
-WEB_SERVER_HOST = "127.0.0.1"
-# Port for incoming request from reverse proxy. Should be any available port
-WEB_SERVER_PORT = 8081
-WEBHOOK_PATH = "/webhook"
-WEBHOOK_SECRET = "my-secret"
-BASE_WEBHOOK_URL = "https://bot.thevirgoent.com"
 router = Router()
 ADMINS = [6921553302] 
 TOKEN = settings.BOT_TOKEN
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
-
-
 pm = ParseMode.MARKDOWN_V2
+
 class Command(BaseCommand):
     help = 'Channel Manager Bot'
 
@@ -61,35 +48,16 @@ class Command(BaseCommand):
             if len(msg.split()) == 2:
                 file_id = msg.split()[1]
                 await sync_to_async(send_file.delay)(chat_id, file_id)
-
-                
             else:
-                message.answer('Visit the channel @udpcustom')
+                await message.answer('Visit the channel @udpcustom')
 
-
-
-        async def on_startup(bot: Bot) -> None:
-            await bot.set_webhook(f"{BASE_WEBHOOK_URL}{WEBHOOK_PATH}", secret_token=WEBHOOK_SECRET)
-
-        def main(): 
+        async def main():
             dp = Dispatcher()
             dp.include_router(router)
-            dp.startup.register(on_startup)
-            # Create aiohttp.web.Application instance
-            app = web.Application()
-            webhook_requests_handler = SimpleRequestHandler(
-                dispatcher=dp,
-                bot=bot,
-                secret_token=WEBHOOK_SECRET,
-            )
-            # Register webhook handler on application
-            webhook_requests_handler.register(app, path=WEBHOOK_PATH)
-
-            # Mount dispatcher startup and shutdown hooks to aiohttp application
-            setup_application(app, dp, bot=bot)
-
-            # And finally start webserver
-            web.run_app(app, host=WEB_SERVER_HOST, port=WEB_SERVER_PORT)
+            
+            # Start polling instead of webhook
+            await bot.delete_webhook()  # Ensure webhook is removed
+            await dp.start_polling(bot)
 
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
         asyncio.run(main())
