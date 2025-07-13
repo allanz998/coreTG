@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g7m5lf^@gzmw=-v$8@)dnw@6b$xr&vo371tvag2to($0lgiqlt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     BOT_TOKEN = "7486127009:AAGhNwwxMGV7ks68Tv67lEJR6-tQ2B6g_Ok" #Test
@@ -25,10 +25,10 @@ else:
     CHANNEL_ID = -1001653400671
     BOT_NAME = "err404_Bot"
 
-ALLOWED_HOSTS = ['127.0.0.1','0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1','0.0.0.0', 'dexdns.vpsguy.online']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://localhost:8000',
+    'https://dexdns.vpsguy.online:4200',
     'https://127.0.0.1:8000',
 ]
 
